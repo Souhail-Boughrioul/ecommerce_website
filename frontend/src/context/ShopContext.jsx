@@ -38,6 +38,15 @@ const ShopContextProvider = ({children})  => {
         }
 
         setCartItems(cartData);
+
+        if(token){
+            try{
+                await axios.post(backendUrl + '/api/cart/add', {itemId,size}, {headers:{token}})
+            }catch(err){
+                console.log(err);
+                toast.error(err.message);
+            }
+        }
     }
 
     const getCartCount = () => {
@@ -56,9 +65,6 @@ const ShopContextProvider = ({children})  => {
         return totalCount;
     }
 
-    useEffect(()=>{
-        console.log(cartItems);
-    }, [cartItems])
 
     const updateQuantity = async (itemId, size, quantity)=> {
         let cartData = structuredClone(cartItems);
@@ -66,6 +72,15 @@ const ShopContextProvider = ({children})  => {
         cartData[itemId][size] = quantity;
 
         setCartItems(cartData);
+
+        if(token){
+            try{
+                await axios.post(backendUrl + '/api/cart/update', {itemId,size,quantity}, {headers:{token}})
+            }catch(err){
+                console.log(err);
+                toast.error(err.message);
+            }
+        }
     }
 
     const getCartAmount = () => {
@@ -103,9 +118,31 @@ const ShopContextProvider = ({children})  => {
         }
     }
 
+    const getUserCart = async (token) => {
+        try{
+            const response = await axios.post(backendUrl + '/api/cart/get',{},{headers:{token}});
+            if(response.data.success) {
+                setCartItems(response.data.cartData);
+            }
+        }catch(err){
+            console.log(err);
+            toast.error(err.message);
+        }
+    }
+
     useEffect(()=>{
         getProductsData();
     },[])
+
+    useEffect(()=>{
+        if(!token && localStorage.getItem('token')){
+            setToken(localStorage.getItem('token'))
+            getUserCart(localStorage.getItem('token'))
+        }
+        if (token) {
+            getUserCart(token)
+        }
+    },[token])
     
     const value = {
         products,
@@ -113,7 +150,7 @@ const ShopContextProvider = ({children})  => {
         delivery_fee,
         search,setSearch,
         showSearch, setShowSearch,
-        cartItems, addToCart,
+        cartItems,setCartItems, addToCart,
         getCartCount, updateQuantity, 
         getCartAmount, navigate,backendUrl,
         token,setToken
@@ -126,4 +163,4 @@ const ShopContextProvider = ({children})  => {
     )
 }
 
-export default ShopContextProvider;
+export default ShopContextProvider

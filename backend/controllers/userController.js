@@ -13,7 +13,7 @@ const loginUser = async (req,res)=>{
 
         const {email, password} = req.body;
     
-        const user = new userModel.findOne({email});
+        const user = await userModel.findOne({email});
     
         if(!user){
             return res.json({success: false, message: "User doesn't exists"});
