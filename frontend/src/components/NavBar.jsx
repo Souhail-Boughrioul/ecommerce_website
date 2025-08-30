@@ -7,7 +7,6 @@ const NavBar = () => {
     const [visible, setVisible] = useState(false);
 
     const {setShowSearch, getCartCount, navigate, token, setToken, setCartItems} = useContext(ShopContext);
-    const admin_url = import.meta.env.VITE_ADMIN_URL
 
     const logout = ()=>{
         navigate('/login');
@@ -43,7 +42,6 @@ const NavBar = () => {
             </NavLink>
         </ul>
 
-        <Link to={admin_url} target="_blank"  className='flex items-center justify-center cursor-pointer border border-gray-300 px-3 py-1 rounded-full  text-gray-700'> admin panel </Link>
 
         <div className='flex items-center gap-6'>
             <img onClick={()=> {setShowSearch(true); navigate('/collection')}} src={assets.search_icon} className='w-5 cursor-pointer' alt="" />
